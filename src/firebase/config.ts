@@ -2,6 +2,9 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+const FIREBASE_ENABLED = !!import.meta.env.VITE_FIREBASE_API_KEY &&
+  !import.meta.env.VITE_FIREBASE_API_KEY.startsWith('demo');
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -11,7 +14,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 } as const;
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const app = FIREBASE_ENABLED ? initializeApp(firebaseConfig) : null;
+export const auth = FIREBASE_ENABLED ? getAuth(app!) : null;
+export const db = FIREBASE_ENABLED ? getFirestore(app!) : null;
 export default app;

@@ -10,11 +10,18 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 
+const FIREBASE_ENABLED = !!import.meta.env.VITE_FIREBASE_API_KEY &&
+  !import.meta.env.VITE_FIREBASE_API_KEY.startsWith('demo');
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!FIREBASE_ENABLED) {
+      setLoading(false);
+      return;
+    }
     const unsub = onAuthStateChanged(auth, u => {
       setUser(u);
       setLoading(false);

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Chapter, Section } from './types';
 import { useNotes } from './hooks/useNotes';
 import { useReview } from './hooks/useReview';
-import { useAuth } from './hooks/useAuth';
 import { ChapterSidebar } from './components/ChapterSidebar';
 import { MarkdownRenderer } from './components/MarkdownRenderer';
 import { FormulaCard } from './components/FormulaCard';
@@ -12,24 +11,6 @@ import { SectionErrorBoundary } from './components/ErrorBoundary';
 import { getDueSectionIds } from './lib/reviewStorage';
 
 type View = 'read' | 'review';
-
-function AuthScreen({ onLogin }: { onLogin: () => void }) {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-100">
-      <div className="bg-white p-8 rounded-xl shadow-md text-center max-w-sm w-full">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">📚 笔记BS系统</h1>
-        <p className="text-slate-500 mb-6">登录后同步复习进度</p>
-        <button
-          onClick={onLogin}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-        >
-          使用 Google 登录
-        </button>
-        <p className="text-xs text-slate-400 mt-4">暂不登录也可浏览笔记（进度不保存）</p>
-      </div>
-    </div>
-  );
-}
 
 function SectionView({
   section,
@@ -102,7 +83,6 @@ function findSection(chapters: Chapter[], id: string): Section | null {
 
 export default function App() {
   const { db, loading, error } = useNotes();
-  const { user, loginWithGoogle } = useAuth();
   const { state: reviewState, review } = useReview();
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 
@@ -140,10 +120,6 @@ export default function App() {
     );
   }
   if (!db) return null;
-
-  if (!user) {
-    return <AuthScreen onLogin={loginWithGoogle} />;
-  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-white">
