@@ -18,7 +18,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!FIREBASE_ENABLED) {
+    if (!FIREBASE_ENABLED || !auth) {
       setLoading(false);
       return;
     }
@@ -30,14 +30,15 @@ export function useAuth() {
   }, []);
 
   const login = (email: string, password: string) =>
-    signInWithEmailAndPassword(auth, email, password);
+    auth ? signInWithEmailAndPassword(auth, email, password) : Promise.reject();
 
   const register = (email: string, password: string) =>
-    createUserWithEmailAndPassword(auth, email, password);
+    auth ? createUserWithEmailAndPassword(auth, email, password) : Promise.reject();
 
-  const loginWithGoogle = () => signInWithPopup(auth, new GoogleAuthProvider());
+  const loginWithGoogle = () =>
+    auth ? signInWithPopup(auth, new GoogleAuthProvider()) : Promise.reject();
 
-  const logout = () => signOut(auth);
+  const logout = () => auth ? signOut(auth) : Promise.reject();
 
   return { user, loading, login, register, loginWithGoogle, logout };
 }
