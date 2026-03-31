@@ -10,7 +10,7 @@ export function useNotes() {
 
   useEffect(() => {
     if (cachedDb) return;
-    fetch('/notes.json')
+    fetch('./notes.json')
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
